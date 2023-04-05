@@ -9,7 +9,7 @@
                     <button class="btn-icon" disabled>
                         <Icon glyph="lock" />
                     </button>
-                    <button class="btn-icon" :disabled="note.id < 0" @click="showDelete = true;">
+                    <button class="btn-icon" :disabled="isCreating" @click="showDelete = true;">
                         <Icon glyph="trash" />
                     </button>
                     <button class="btn-icon" :disabled="!canSave" @click="saveChanges">
@@ -24,7 +24,7 @@
             <span id="title" contenteditable data-placeholder="Title" @input="changes = true;" ref="titleInput">{{ note.name }}</span>
 
             <div id="info">
-                Last edited: {{ note.last_edited }}
+                <span v-show="!isCreating">Last edited: {{ lastEdited }} ago</span>
             </div>
 
             <span id="content" contenteditable data-placeholder="Take a note..." @input="changes = true;" ref="contentInput">
@@ -45,6 +45,7 @@ import { useRoute } from 'vue-router';
 import Icon from '@/components/Icon.vue'
 import router from '@/router';
 import NoteDeleteDialog from '@/components/NoteDeleteDialog.vue';
+import { timestampFormat } from '@/util';
 
 const route = useRoute()
 const notes = useNoteStore()
@@ -57,6 +58,20 @@ const titleInput = ref<HTMLParagraphElement>()
 const contentInput = ref<HTMLParagraphElement>()
 
 const note = ref<Note | null>(null)
+
+const now = ref(Date.now())
+
+const lastEdited = computed(() => {
+    if (note.value) {
+        return timestampFormat(note.value.last_edited, now.value)
+    }
+
+    return ''
+})
+
+const isCreating = computed((): boolean => {
+    return !!note.value && note.value.id < 0
+})
 
 onMounted(() => {
     if (props.create) {
@@ -73,7 +88,11 @@ onMounted(() => {
         notes.details(route.params.id as string).then(v => {
             note.value = v
         })
-    
+        
+        setInterval(() => {
+            now.value = Date.now()
+        }, 60000)
+        
     }
 })
 
@@ -180,6 +199,12 @@ article {
 	font-style: italic;
 	cursor: text;
 	opacity: .6;
+}
+
+#info {
+	display: flex;
+	justify-content: right;
+	font-size: 0.9em;
 }
 
 .btn-icon {

@@ -1,9 +1,9 @@
 <template>
     <div class="note-card">
         <h2>{{ note.name }}</h2>
-        <RouterLink :to="{ name: 'edit', params: { id: note.id } }">Edit</RouterLink>
-        <a href="#">Share</a>
-        <a href="#">Delete</a>
+        <RouterLink class="btn-flat" :to="{ name: 'edit', params: { id: note.id } }">Edit</RouterLink>
+        <a class="btn-flat">Share</a>
+        <a class="btn-flat">Delete</a>
     </div>
 </template>
 
