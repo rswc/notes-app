@@ -22,6 +22,30 @@
     transition: .3s;
 }
 
+.btn-flat {
+	padding: 6px;
+	margin: 2px;
+	cursor: pointer;
+	font-family: 'Arvo', sans-serif;
+    font-size: .9em;
+	color: var(--color-text);
+	text-decoration: none;
+    transition: .5s;
+}
+
+.btn-flat:hover {
+    color: var(--color-mood-light);
+}
+
+.btn-flat:active {
+    color: var(--color-mood-dark);
+    transition: .3s;
+}
+
+.btn-flat .icon {
+	position: relative;
+	top: -2px;
+}
 
 .modal-enter-from {
     opacity: 0;
