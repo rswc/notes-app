@@ -33,6 +33,7 @@
 
             <NoteDeleteDialog :show="showDelete" :note="note" @close="showDelete = false;" @deleted="deleted" />
         </article>
+        <Spinner v-else />
     </main>
 
 </template>
@@ -46,6 +47,7 @@ import Icon from '@/components/Icon.vue'
 import router from '@/router';
 import NoteDeleteDialog from '@/components/NoteDeleteDialog.vue';
 import { timestampFormat } from '@/util';
+import Spinner from '@/components/Spinner.vue';
 
 const route = useRoute()
 const notes = useNoteStore()
