@@ -1,0 +1,38 @@
+@import "./base.css";
+
+
+.btn-pill {
+    font-size: 0.9em;
+    border: none;
+    padding: 12px 18px;
+    margin: 0 8px;
+    background-color: var(--color-mood);
+    border-radius: 100vh;
+    text-transform: uppercase;
+    transition: .5s background-color;
+    cursor: pointer;
+}
+
+.btn-pill:hover {
+    background-color: var(--color-mood-light);
+}
+
+.btn-pill:active {
+    background-color: var(--color-mood-dark);
+    transition: .3s;
+}
+
+
+.modal-enter-from {
+    opacity: 0;
+}
+
+.modal-leave-to {
+    opacity: 0;
+}
+
+.modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
