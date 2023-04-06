@@ -4,5 +4,7 @@ export default interface Note {
     content?: string,
     date_created: string,
     last_edited: string,
-    owner: number
+    owner: number,
+    color: string,
+    tags: string[]
 }

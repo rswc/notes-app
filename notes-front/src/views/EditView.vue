@@ -24,7 +24,8 @@
             <span id="title" contenteditable data-placeholder="Title" @input="changes = true;" ref="titleInput">{{ note.name }}</span>
 
             <div id="info">
-                <span v-show="!isCreating">Last edited: {{ lastEdited }} ago</span>
+                <TagsInput :note="note" v-model="note.tags" />
+                <span v-show="!isCreating" style="text-align: right;">Last edited: {{ lastEdited }} ago</span>
             </div>
 
             <span id="content" contenteditable data-placeholder="Take a note..." @input="changes = true;" ref="contentInput">
@@ -48,6 +49,8 @@ import router from '@/router';
 import NoteDeleteDialog from '@/components/NoteDeleteDialog.vue';
 import { timestampFormat } from '@/util';
 import Spinner from '@/components/Spinner.vue';
+import TagsInput from '@/components/TagsInput.vue';
+
 
 const route = useRoute()
 const notes = useNoteStore()
@@ -83,7 +86,9 @@ onMounted(() => {
             content: '',
             owner: -1,
             date_created: '',
-            last_edited: ''
+            last_edited: '',
+            color: 'white',
+            tags: []
         }
     
     } else {
@@ -184,7 +189,7 @@ article {
     font-family: 'Playfair Display', serif;
     border-bottom: 2px solid transparent;
     word-wrap: anywhere;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     transition: .3s border-color;
 }
 
@@ -205,8 +210,9 @@ article {
 
 #info {
 	display: flex;
-	justify-content: right;
+	flex-direction: column;
 	font-size: 0.9em;
+	margin-bottom: 24px;
 }
 
 .btn-icon {
