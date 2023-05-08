@@ -18,9 +18,16 @@
                 </div>
             </div>
 
+            <span class="error-text" v-for="error in validationErrors.non_field_errors" :key="error">
+                {{ error }}
+            </span>
+
             <!-- Why span, you ask? -->
             <!-- https://stackoverflow.com/a/60482138 -->
             <span id="title" contenteditable data-placeholder="Title" @input="changes = true;" ref="titleInput">{{ note.name }}</span>
+            <span class="error-text" v-for="error in validationErrors.name" :key="error">
+                {{ error }}
+            </span>
 
             <div id="info">
                 <TagsInput :note="note" v-model="note.tags" />
@@ -29,6 +36,9 @@
 
             <span id="content" contenteditable data-placeholder="Take a note..." @input="changes = true;" ref="contentInput">
                 {{ note.content }}
+            </span>
+            <span class="error-text" v-for="error in validationErrors.content" :key="error">
+                {{ error }}
             </span>
 
             <NoteDeleteDialog :show="showDelete" :note="note" @close="showDelete = false;" @deleted="deleted" />
@@ -39,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useNoteStore } from '@/stores/notes';
+import { useNoteStore, type CreateResult } from '@/stores/notes';
 import type Note from '@/types/note';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -76,6 +86,8 @@ const lastEdited = computed(() => {
 const isCreating = computed((): boolean => {
     return !!note.value && note.value.id < 0
 })
+
+const validationErrors = ref<{[key: string]: string}>({})
 
 onMounted(() => {
     if (props.create) {
@@ -116,16 +128,23 @@ const saveChanges = () => {
         note.value.content = contentInput.value?.innerText || ''
 
         if (props.create) {
-            notes.create(note.value).then((v: Note) => {
-                // whatever
-                v.content = note.value?.content
-                note.value = v
-
-                router.replace({ name: 'edit', params: { id: v.id } })
+            notes.create(note.value).then((res: CreateResult) => {
+                if (res.success) {
+                    const v = res.note
+                    
+                    // whatever
+                    v.content = note.value?.content
+                    note.value = v
+    
+                    router.replace({ name: 'edit', params: { id: v.id } })
+                } else {
+                    validationErrors.value = res.errors
+                }
             })
 
         } else {
             notes.save(note.value)
+            //TODO: validation here as well
 
         }
     }

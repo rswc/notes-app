@@ -5,6 +5,8 @@ import type Tag from '@/types/tag'
 
 const api_hostname = import.meta.env.VITE_API_HOSTNAME
 
+export type CreateResult = {success: true, note: Note} | {success: false, errors: {[key: string]: string}}
+
 export const useNoteStore = defineStore('notes', () => {
 
     const _notes = ref<Note[]>([])
@@ -65,7 +67,7 @@ export const useNoteStore = defineStore('notes', () => {
         })
     }
 
-    const create = async (note: Note) => {
+    const create = async (note: Note): Promise<CreateResult> => {
         const resp = await fetch(`${api_hostname}note/`, {
             method: 'POST',
             headers: {
@@ -80,9 +82,19 @@ export const useNoteStore = defineStore('notes', () => {
 
         const v = await resp.json()
 
-        _notes.value.push(v)
+        if (resp.ok) {
+            _notes.value.push(v)
+
+            return {
+                success: true,
+                note: v
+            }
+        }
         
-        return v
+        return {
+            success: false,
+            errors: v
+        }
     }
 
     const remove = async (note: Note) => {
@@ -115,7 +127,7 @@ export const useNoteStore = defineStore('notes', () => {
             _tags.value.push(clean)
         }
 
-        if (note.id > 0) {
+        if (note.id >= 0) {
             return fetch(`${api_hostname}note/${note.id}/`, {
                 method: 'PATCH',
                 headers: {
@@ -146,15 +158,20 @@ export const useNoteStore = defineStore('notes', () => {
             internal.tags.splice(iidx, 1)
         }
 
-        return fetch(`${api_hostname}note/${note.id}/`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                tags: note.tags
+        if (note.id >= 0) {
+            return fetch(`${api_hostname}note/${note.id}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tags: note.tags
+                })
             })
-        })
+        } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            return new Promise(_ => {})
+        }
     }
 
     const deleteTag = async (tag: string) => {

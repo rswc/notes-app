@@ -51,4 +51,13 @@ class NoteSerializer(serializers.ModelSerializer):
         note.save()
 
         return note
+    
+    def validate(self, attrs):
+        user = 1 #self.context['request'].user.id
+        name = attrs.get('name')
+
+        if Note.objects.filter(owner=user, name=name).exists():
+            raise serializers.ValidationError({'name': ['A note of this title already exists.']})
+
+        return super().validate(attrs)
 

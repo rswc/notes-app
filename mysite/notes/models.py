@@ -23,7 +23,7 @@ class Note(models.Model):
         PINK = 'P', 'Pink'
 
     name = models.CharField(max_length=96)
-    content = models.TextField()
+    content = models.TextField(blank=True)
     owner = models.ForeignKey('User', on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True)
     last_edited = models.DateTimeField(auto_now=True)
