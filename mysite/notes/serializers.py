@@ -14,7 +14,7 @@ class CreatableSlugRelatedField(serializers.SlugRelatedField):
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['name', 'user']
+        fields = '__all__'
 
 
 class NoteFullSerializer(serializers.ModelSerializer):

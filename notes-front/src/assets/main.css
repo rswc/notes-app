@@ -37,14 +37,15 @@ input:focus {
 }
 
 .btn-flat {
-	padding: 6px;
+	padding: 4px;
 	margin: 2px;
 	cursor: pointer;
 	font-family: 'Arvo', sans-serif;
-    font-size: .9em;
+	font-size: .9em;
 	color: var(--color-text);
 	text-decoration: none;
-    transition: .5s;
+	transition: .5s;
+	display: inline-block;
 }
 
 .btn-flat:hover {
