@@ -18,9 +18,8 @@
                 </div>
             </div>
 
-            <!-- Why span, you ask? Gaze upon this bullshit: -->
+            <!-- Why span, you ask? -->
             <!-- https://stackoverflow.com/a/60482138 -->
-
             <span id="title" contenteditable data-placeholder="Title" @input="changes = true;" ref="titleInput">{{ note.name }}</span>
 
             <div id="info">

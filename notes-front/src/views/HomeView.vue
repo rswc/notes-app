@@ -14,8 +14,14 @@
 			</div>
 		</div>
 		<div id="notes">
-			<div class="note-card" @click="createNote">
-				Create note
+			<div id="search-container">
+				<span id="search-wrap">
+					<Icon id="search-icon" glyph="search" />
+					<input id="search" type="text" v-model="filterText" placeholder="Search" @change="notes.get(filterText)">
+				</span>
+			</div>
+			<div id="create-note" class="note-card" @click="createNote">
+				New note
 			</div>
 			<NoteCard v-for="note in filteredNotes" :note="note" :key="note.id" @delete="deleteNote = note" />
 		</div>
@@ -54,6 +60,8 @@ const setFilter = (tag: string) => {
 	}
 }
 
+const filterText = ref('')
+
 const filteredNotes = computed(() => {
 	if (filterTag.value === null) {
 		return notes.notes
@@ -77,6 +85,45 @@ main#home {
 	grid-template-columns: repeat(4, 1fr);
 	grid-gap: 16px;
 	width: 100%;
+}
+
+#search-container {
+	grid-column: span 4;
+	display: flex;
+	justify-content: center;
+}
+
+#search {
+	background-color: var(--color-element);
+	box-shadow: 3px 3px 10px -2px #00000026;
+	padding: 12px;
+	border-radius: 8px;
+	max-width: 512px;
+	width: 100%;
+	padding-left: 45px;
+}
+
+#search-wrap {
+	width: 100%;
+	max-width: 512px;
+}
+
+#search-icon {
+	position: absolute;
+	left: 7px;
+	top: 7px;
+	z-index: 1;
+	font-size: 1.3em;
+}
+
+#create-note {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: 2em;
+	font-weight: bold;
+	color: var(--color-primary);
+	cursor: pointer;
 }
 
 .filters {

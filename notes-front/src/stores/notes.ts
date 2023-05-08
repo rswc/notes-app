@@ -14,8 +14,8 @@ export const useNoteStore = defineStore('notes', () => {
     const notes = computed(() => _notes.value)
     const tags = computed(() => _tags.value)
 
-    const get = () => {
-        fetch(`${api_hostname}note/`, {
+    const get = (search: string | null = null) => {
+        fetch(`${api_hostname}note/${search ? "?search=" + search : ""}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json'

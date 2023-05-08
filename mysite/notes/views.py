@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.db.models import Q
 from rest_framework import generics
 from .models import *
 from .serializers import *
@@ -12,8 +13,14 @@ class api_notes(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
 
     def get_queryset(self):
-        return Note.objects.all()
-        # return Note.objects.filter(owner=self.request.user.id)
+        # Note.objects.filter(owner=self.request.user.id)
+        queryset = Note.objects.all()
+
+        search = self.request.query_params.get('search')
+        if search is not None:
+            queryset = queryset.filter(Q(name__contains=search) | Q(content__contains=search))
+
+        return queryset
 
 class api_note(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = NoteFullSerializer
