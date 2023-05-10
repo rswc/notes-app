@@ -2,7 +2,14 @@
     <header>
         <h1>Notes app</h1>
 
-        <u>Username</u>
+		<div>
+			Welcome, 
+			<span style="font-weight: bold;">{{ uname }}</span>&ThickSpace;
+			<a class="btn-flat negative" href="/accounts/logout/">
+				<Icon glyph="log-out" />
+				Log out
+			</a>
+		</div>
     </header>
 
     <RouterView />
@@ -11,10 +18,13 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { useNoteStore } from './stores/notes';
+import Icon from './components/Icon.vue';
 
 const notes = useNoteStore()
 
 notes.get()
+
+const uname = window.notesapp_username
 
 </script>
 

@@ -6,8 +6,9 @@
                     <RouterLink to="/" class="btn-icon">
                         <Icon glyph="arrow-left" />
                     </RouterLink>
-                    <button class="btn-icon" disabled>
-                        <Icon glyph="lock" />
+                    <button class="btn-icon" @click="changePublic">
+                        <Icon glyph="lock" v-show="!note.public" />
+                        <Icon glyph="globe" v-show="note.public" />
                     </button>
                     <button class="btn-icon" :disabled="isCreating" @click="showUpload = true;">
                         <Icon glyph="media-image" />
@@ -185,6 +186,14 @@ const deleted = () => {
 
 const changed = (cover: string) => {
     note.value!.cover = cover
+}
+
+const changePublic = () => {
+    notes.setPublic(note.value!, !note.value?.public).then((res: NoteAPIResult) => {
+        if (res.success) {
+            note.value!.public = res.note.public
+        }
+    })
 }
 
 </script>

@@ -12,7 +12,7 @@ app.use(createPinia())
 app.use(router)
 
 declare global {
-    interface Window { userId: number | null }
+    interface Window { userId: number | null, notesapp_username: string }
 }
 
 app.provide('userId', window.userId)

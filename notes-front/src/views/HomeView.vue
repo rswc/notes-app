@@ -78,17 +78,18 @@ const deleteNote = ref<Note|null>(null)
 main#home {
 	padding: 18px;
 	display: flex;
+	--notes-grid-columns: 5
 }
 
 #notes {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(var(--notes-grid-columns), 1fr);
 	grid-gap: 16px;
 	width: 100%;
 }
 
 #search-container {
-	grid-column: span 4;
+	grid-column: span var(--notes-grid-columns);
 	display: flex;
 	justify-content: center;
 }
@@ -124,6 +125,7 @@ main#home {
 	font-weight: bold;
 	color: var(--color-primary);
 	cursor: pointer;
+	padding: 24px;
 }
 
 .filters {
@@ -144,5 +146,29 @@ main#home {
 	color: var(--color-mood);
 	transition: .3s color;
 	cursor: pointer;
+}
+
+@media screen and (max-width: 1250px) {
+	main#home {
+		--notes-grid-columns: 4
+	}
+}
+
+@media screen and (max-width: 1024px) {
+	main#home {
+		--notes-grid-columns: 3
+	}
+}
+
+@media screen and (max-width: 824px) {
+	main#home {
+		--notes-grid-columns: 2
+	}
+}
+
+@media screen and (max-width: 650px) {
+	main#home {
+		--notes-grid-columns: 1
+	}
 }
 </style>

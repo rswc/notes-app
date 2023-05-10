@@ -163,6 +163,38 @@ export const useNoteStore = defineStore('notes', () => {
         }
     }
 
+    const setPublic = async (note: Note, value: boolean): Promise<NoteAPIResult> => {
+        const resp = await fetch(`${api_hostname}note/${note.id}/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                public: value
+            })
+        })
+
+        const v = await resp.json()
+
+        if (resp.ok) {
+            const idx = _notes.value.findIndex(v => v.id === note.id)
+
+            if (idx >= 0) {
+                _notes.value[idx] = v
+            }
+
+            return {
+                success: true,
+                note: v
+            }
+        }
+        
+        return {
+            success: false,
+            errors: v
+        }
+    }
+
     const addTag = (note: Note, tag: string) => {
         let clean = tag
         clean = clean.replace(/ /g, '-')
@@ -242,6 +274,6 @@ export const useNoteStore = defineStore('notes', () => {
         }
     }
 
-    return { notes, tags, get, details, save, create, remove, setCover, addTag, removeTag, deleteTag }
+    return { notes, tags, get, details, save, create, remove, setCover, setPublic, addTag, removeTag, deleteTag }
 
 })

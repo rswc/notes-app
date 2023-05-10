@@ -1,10 +1,10 @@
 <template>
     <div class="note-card">
-        <div>
+        <RouterLink style="text-decoration: none;" :to="{ name: 'edit', params: { id: note.id } }">
             <div class="note-card-cover" :style="{'background-image': `url(${note.cover})`}" >
                 <h1>{{ note.name }}</h1>
             </div>
-        </div>
+        </RouterLink>
         <div style="padding: 12px;">
             <span v-for="tag in note.tags" :key="tag" class="mini-tag">#{{ tag }}</span>
         </div>
@@ -13,10 +13,6 @@
                 <Icon glyph="edit-pencil" />
                 Edit
             </RouterLink>
-            <a class="btn-flat primary">
-                <Icon glyph="share" />
-                Share
-            </a>
             <a class="btn-flat negative" @click="emit('delete')">
                 <Icon glyph="trash" />
                 Delete
@@ -62,6 +58,7 @@ const emit = defineEmits(['delete'])
 	display: inline;
 	background-color: var(--color-element);
 	padding: 0.2rem;
+    color: var(--color-text);
 }
 
 .mini-tag {
