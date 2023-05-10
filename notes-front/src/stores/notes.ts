@@ -5,7 +5,7 @@ import type Tag from '@/types/tag'
 
 const api_hostname = import.meta.env.VITE_API_HOSTNAME
 
-export type CreateResult = {success: true, note: Note} | {success: false, errors: {[key: string]: string}}
+export type NoteAPIResult = {success: true, note: Note} | {success: false, errors: {[key: string]: string}}
 
 export const useNoteStore = defineStore('notes', () => {
 
@@ -54,9 +54,9 @@ export const useNoteStore = defineStore('notes', () => {
         return await response.json()
     }
 
-    const save = (note: Note) => {
-        return fetch(`${api_hostname}note/${note.id}/`, {
-            method: 'PUT',
+    const save = async (note: Note): Promise<NoteAPIResult> => {
+        const resp = await fetch(`${api_hostname}note/${note.id}/`, {
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -65,9 +65,29 @@ export const useNoteStore = defineStore('notes', () => {
                 content: note.content
             })
         })
+
+        const v = await resp.json()
+
+        if (resp.ok) {
+            const idx = _notes.value.findIndex(v => v.id === note.id)
+
+            if (idx >= 0) {
+                _notes.value[idx] = v
+            }
+
+            return {
+                success: true,
+                note: v
+            }
+        }
+        
+        return {
+            success: false,
+            errors: v
+        }
     }
 
-    const create = async (note: Note): Promise<CreateResult> => {
+    const create = async (note: Note): Promise<NoteAPIResult> => {
         const resp = await fetch(`${api_hostname}note/`, {
             method: 'POST',
             headers: {

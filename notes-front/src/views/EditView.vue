@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useNoteStore, type CreateResult } from '@/stores/notes';
+import { useNoteStore, type NoteAPIResult } from '@/stores/notes';
 import type Note from '@/types/note';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -128,7 +128,7 @@ const saveChanges = () => {
         note.value.content = contentInput.value?.innerText || ''
 
         if (props.create) {
-            notes.create(note.value).then((res: CreateResult) => {
+            notes.create(note.value).then((res: NoteAPIResult) => {
                 if (res.success) {
                     const v = res.note
                     
@@ -143,8 +143,21 @@ const saveChanges = () => {
             })
 
         } else {
-            notes.save(note.value)
-            //TODO: validation here as well
+            notes.save(note.value).then((res: NoteAPIResult) => {
+                if (res.success) {
+                    const v = res.note
+                    
+                    // whatever
+                    v.content = note.value?.content
+                    v.name = note.value?.name || ''
+                    note.value = v
+
+                    validationErrors.value = {}
+
+                } else {
+                    validationErrors.value = res.errors
+                }
+            })
 
         }
     }
