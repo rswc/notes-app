@@ -24,3 +24,6 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path('api-auth/', include('rest_framework.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += static('static/', document_root=settings.BASE_DIR / "static")
+urlpatterns += static('assets/', document_root=settings.BASE_DIR / "static")

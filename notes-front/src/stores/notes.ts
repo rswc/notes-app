@@ -12,15 +12,28 @@ export const useNoteStore = defineStore('notes', () => {
     const _notes = ref<Note[]>([])
     const _tags = ref<string[]>([])
     const _tagIds = ref<{[key: string]: number}>({})
+    const _csrf = ref('')
 
     const notes = computed(() => _notes.value)
     const tags = computed(() => _tags.value)
+
+    function getCookie(name: string) {
+        const nameEQ = name + "=";
+        const ca = document.cookie.split(';');
+        for(let i=0;i < ca.length;i++) {
+            let c = ca[i];
+            while (c.charAt(0)==' ') c = c.substring(1,c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+    }
 
     const get = (search: string | null = null) => {
         fetch(`${api_hostname}note/${search ? "?search=" + search : ""}`, {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-CSRFToken': _csrf.value
             }
         })
             .then(response => response.json())
@@ -31,7 +44,8 @@ export const useNoteStore = defineStore('notes', () => {
         fetch(`${api_hostname}tag/`, {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-CSRFToken': _csrf.value
             }
         })
             .then(response => response.json())
@@ -41,13 +55,16 @@ export const useNoteStore = defineStore('notes', () => {
                     _tagIds.value[tag.name] = tag.id
                 })
             })
+
+        _csrf.value = getCookie('csrftoken') || ''
     }
 
     const details = async (id: number|string) => {
         const response = await fetch(`${api_hostname}note/${id}/`, {
             method: 'GET',
             headers: {
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-CSRFToken': _csrf.value
             }
         })
 
@@ -58,7 +75,8 @@ export const useNoteStore = defineStore('notes', () => {
         const resp = await fetch(`${api_hostname}note/${note.id}/`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': _csrf.value
             },
             body: JSON.stringify({
                 name: note.name,
@@ -91,7 +109,8 @@ export const useNoteStore = defineStore('notes', () => {
         const resp = await fetch(`${api_hostname}note/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': _csrf.value
             },
             body: JSON.stringify({
                 name: note.name,
@@ -120,6 +139,7 @@ export const useNoteStore = defineStore('notes', () => {
     const remove = async (note: Note) => {
         const resp = await fetch(`${api_hostname}note/${note.id}/`, {
             method: 'DELETE',
+            headers: {'X-CSRFToken': _csrf.value},
         })
 
         if (resp.ok) {
@@ -139,6 +159,7 @@ export const useNoteStore = defineStore('notes', () => {
 
         const resp = await fetch(`${api_hostname}note/${note.id}/`, {
             method: 'PATCH',
+            headers: {'X-CSRFToken': _csrf.value},
             body: data
         })
 
@@ -167,7 +188,8 @@ export const useNoteStore = defineStore('notes', () => {
         const resp = await fetch(`${api_hostname}note/${note.id}/`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': _csrf.value
             },
             body: JSON.stringify({
                 public: value
@@ -213,7 +235,8 @@ export const useNoteStore = defineStore('notes', () => {
             return fetch(`${api_hostname}note/${note.id}/`, {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': _csrf.value
                 },
                 body: JSON.stringify({
                     tags: note.tags
@@ -244,7 +267,8 @@ export const useNoteStore = defineStore('notes', () => {
             return fetch(`${api_hostname}note/${note.id}/`, {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': _csrf.value
                 },
                 body: JSON.stringify({
                     tags: note.tags
@@ -260,6 +284,7 @@ export const useNoteStore = defineStore('notes', () => {
         if (_tagIds.value[tag]) {
             const resp = await fetch(`${api_hostname}tag/${_tagIds.value[tag]}/`, {
                 method: 'DELETE',
+                headers: {'X-CSRFToken': _csrf.value},
             })
 
             if (resp.ok) {

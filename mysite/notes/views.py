@@ -7,6 +7,8 @@ from .serializers import *
 
 
 def index(request):
+    if request.user.is_authenticated:
+        return render(request, 'index.html')
     return render(request, 'landing.html')
 
 class api_notes(generics.ListCreateAPIView):
