@@ -6,5 +6,7 @@ export default interface Note {
     last_edited: string,
     owner: number,
     color: string,
-    tags: string[]
+    tags: string[],
+    public: boolean,
+    cover?: string
 }

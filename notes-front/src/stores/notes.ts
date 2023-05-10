@@ -133,6 +133,36 @@ export const useNoteStore = defineStore('notes', () => {
         return resp.ok
     }
 
+    const setCover = async (note: Note, image: File): Promise<NoteAPIResult> => {
+        const data = new FormData()
+        data.append('cover', image)
+
+        const resp = await fetch(`${api_hostname}note/${note.id}/`, {
+            method: 'PATCH',
+            body: data
+        })
+
+        const v = await resp.json()
+
+        if (resp.ok) {
+            const idx = _notes.value.findIndex(v => v.id === note.id)
+
+            if (idx >= 0) {
+                _notes.value[idx] = v
+            }
+
+            return {
+                success: true,
+                note: v
+            }
+        }
+        
+        return {
+            success: false,
+            errors: v
+        }
+    }
+
     const addTag = (note: Note, tag: string) => {
         let clean = tag
         clean = clean.replace(/ /g, '-')
@@ -212,6 +242,6 @@ export const useNoteStore = defineStore('notes', () => {
         }
     }
 
-    return { notes, tags, get, details, save, create, remove, addTag, removeTag, deleteTag }
+    return { notes, tags, get, details, save, create, remove, setCover, addTag, removeTag, deleteTag }
 
 })

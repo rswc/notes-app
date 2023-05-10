@@ -41,32 +41,3 @@ const remove = () => {
 }
 
 </script>
-
-<style>
-.dialog-wrapper {
-	position: fixed;
-	z-index: 100;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: #0003;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-    transition: .3s opacity;
-}
-
-.dialog-container {
-	max-width: 512px;
-	background-color: var(--color-element);
-	border-radius: 8px;
-	padding: 24px 18px;
-	width: 80%;
-}
-
-.dialog-actions {
-	display: flex;
-	justify-content: right;
-}
-</style>

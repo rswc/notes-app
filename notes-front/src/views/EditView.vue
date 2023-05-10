@@ -9,6 +9,9 @@
                     <button class="btn-icon" disabled>
                         <Icon glyph="lock" />
                     </button>
+                    <button class="btn-icon" :disabled="isCreating" @click="showUpload = true;">
+                        <Icon glyph="media-image" />
+                    </button>
                     <button class="btn-icon" :disabled="isCreating" @click="showDelete = true;">
                         <Icon glyph="trash" />
                     </button>
@@ -18,30 +21,37 @@
                 </div>
             </div>
 
-            <span class="error-text" v-for="error in validationErrors.non_field_errors" :key="error">
-                {{ error }}
-            </span>
+            <div v-if="note.cover" id="cover" :style="{'background-image': `url(${note.cover})`}">
 
-            <!-- Why span, you ask? -->
-            <!-- https://stackoverflow.com/a/60482138 -->
-            <span id="title" contenteditable data-placeholder="Title" @input="changes = true;" ref="titleInput">{{ note.name }}</span>
-            <span class="error-text" v-for="error in validationErrors.name" :key="error">
-                {{ error }}
-            </span>
-
-            <div id="info">
-                <TagsInput :note="note" v-model="note.tags" />
-                <span v-show="!isCreating" style="text-align: right;">Last edited: {{ lastEdited }} ago</span>
             </div>
 
-            <span id="content" contenteditable data-placeholder="Take a note..." @input="changes = true;" ref="contentInput">
-                {{ note.content }}
-            </span>
-            <span class="error-text" v-for="error in validationErrors.content" :key="error">
-                {{ error }}
-            </span>
+            <div style="margin: 20px">
+                <span class="error-text" v-for="error in validationErrors.non_field_errors" :key="error">
+                    {{ error }}
+                </span>
+    
+                <!-- Why span, you ask? -->
+                <!-- https://stackoverflow.com/a/60482138 -->
+                <span id="title" contenteditable data-placeholder="Title" @input="changes = true;" ref="titleInput">{{ note.name }}</span>
+                <span class="error-text" v-for="error in validationErrors.name" :key="error">
+                    {{ error }}
+                </span>
+    
+                <div id="info">
+                    <TagsInput :note="note" v-model="note.tags" />
+                    <span v-show="!isCreating" style="text-align: right;">Last edited: {{ lastEdited }} ago</span>
+                </div>
+    
+                <span id="content" contenteditable data-placeholder="Take a note..." @input="changes = true;" ref="contentInput">
+                    {{ note.content }}
+                </span>
+                <span class="error-text" v-for="error in validationErrors.content" :key="error">
+                    {{ error }}
+                </span>
+            </div>
 
             <NoteDeleteDialog :show="showDelete" :note="note" @close="showDelete = false;" @deleted="deleted" />
+            <UploadCoverDialog :show="showUpload" :note="note" @close="showUpload = false;" @changed="changed" />
         </article>
         <Spinner v-else />
     </main>
@@ -56,6 +66,7 @@ import { useRoute } from 'vue-router';
 import Icon from '@/components/Icon.vue'
 import router from '@/router';
 import NoteDeleteDialog from '@/components/NoteDeleteDialog.vue';
+import UploadCoverDialog from '@/components/UploadCoverDialog.vue';
 import { timestampFormat } from '@/util';
 import Spinner from '@/components/Spinner.vue';
 import TagsInput from '@/components/TagsInput.vue';
@@ -99,7 +110,8 @@ onMounted(() => {
             date_created: '',
             last_edited: '',
             color: 'white',
-            tags: []
+            tags: [],
+            public: false
         }
     
     } else {
@@ -164,10 +176,15 @@ const saveChanges = () => {
 }
 
 const showDelete = ref(false)
+const showUpload = ref(false)
 
 const deleted = () => {
     showDelete.value = false
     router.replace('/')
+}
+
+const changed = (cover: string) => {
+    note.value!.cover = cover
 }
 
 </script>
@@ -182,11 +199,17 @@ main#note {
 article {
     width: 100%;
     max-width: 720px;
-    padding: 20px;
     background-color: var(--color-element);
     box-shadow: 0px 1px 10px #00000026;
     border-radius: 8px;
     margin: 0 60px;
+    overflow: auto;
+}
+
+#cover {
+	min-height: 200px;
+	background-size: cover;
+	background-position-y: center;
 }
 
 #content, #title {

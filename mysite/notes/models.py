@@ -1,5 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.utils.deconstruct import deconstructible
+import os
+from uuid import uuid4
+
+# https://stackoverflow.com/a/25768034
+@deconstructible
+class PathAndRename(object):
+
+    def __init__(self, sub_path):
+        self.path = sub_path
+
+    def __call__(self, instance, filename):
+        ext = filename.split('.')[-1]
+        # set filename as random string
+        filename = '{}.{}'.format(uuid4().hex, ext)
+        # return the whole path to the file
+        return os.path.join(self.path, filename)
 
 
 class User(AbstractUser):
@@ -33,6 +51,8 @@ class Note(models.Model):
         default=Colors.WHITE
     )
     tags = models.ManyToManyField(Tag, related_name='notes')
+    public = models.BooleanField(default=False)
+    cover = models.ImageField(upload_to=PathAndRename(settings.MEDIA_ROOT), null=True)
 
     class Meta:
         unique_together = [['owner', 'name']]
