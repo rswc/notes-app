@@ -5,11 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Notes{% endblock %}</title>
+    {% block stylesheet %}
+        <link rel="stylesheet" href="/assets/front.css">
+    {% endblock %}
 </head>
 <body>
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    {% block content %}
+    {% endblock %}
 </body>
 </html>
