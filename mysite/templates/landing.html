@@ -2,13 +2,56 @@
 
 {% block title %}Home{% endblock %}
 
+{% block stylesheet %}
+<link rel="stylesheet" href="/assets/front.css">
+<style>
+    body {
+        display: block;
+        {% comment %} margin-top: 92px; {% endcomment %}
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    {% if user.is_authenticated %}
-        Hi {{ user.username }}!
-        <a href="{% url 'logout' %}">Log Out</a>
-    {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'login' %}">Log In</a>
-        <a href="/register/">Register</a>
-    {% endif %}
+    <header>
+        <h1>Notes app</h1>
+        <div>
+            <a class="btn-pill" href="{% url 'login' %}">Sign in</a>
+            <a class="btn-pill primary" href="/register/">Sign up</a>
+        </div>
+    </header>
+    <div class="jumbotron" style="background-image: url('/static/bg/man_writing.jpg')">
+        <span class="jumbo-text">
+            Be bold.
+            Be creative.
+            Take lots of notes.
+        </span>
+    </div>
+    <div class="segment" style="padding-left: 24%;">
+        <h1>
+            Features
+        </h1>
+        <ul>
+            <li>
+                Unlimited notes
+            </li>
+            <li>
+                Share your thoughts with the world, or keep them private &mdash; you decide!
+            </li>
+            <li>
+                Customize your notes with a cover image
+            </li>
+            <li>
+                Blazing fast
+            </li>
+        </ul>
+    </div>
+    <div class="segment">
+        <center>
+            <a class="btn-pill primary" href="/register/">Sign up</a>
+        </center>
+    </div>
+    <footer>
+        Notes App Inc. Union City, CA
+    </footer>
 {% endblock %}

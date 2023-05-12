@@ -3,27 +3,6 @@ body {
 	box-shadow: 3px 3px 10px 3px #00000080;
 }
 
-.btn-pill {
-    font-size: 0.9em;
-    border: none;
-    padding: 12px 18px;
-    margin: 0 8px;
-    background-color: var(--color-mood);
-    border-radius: 100vh;
-    text-transform: uppercase;
-    transition: .5s background-color;
-    cursor: pointer;
-}
-
-.btn-pill:hover {
-    background-color: var(--color-mood-light);
-}
-
-.btn-pill:active {
-    background-color: var(--color-mood-dark);
-    transition: .3s;
-}
-
 input {
 	background: none;
 	border: none;
