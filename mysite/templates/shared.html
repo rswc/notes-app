@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block stylesheet %}
+<link rel="stylesheet" href="/assets/front.css">
+{% endblock %}
+
+{% block content %}
+    <main>
+        <h1>{{ note.name }}</h1>
+        <p id="note-text">
+            {{ note.content }}
+        </p>
+    </main>
+{% endblock %}

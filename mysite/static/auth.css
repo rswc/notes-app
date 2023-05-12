@@ -1,20 +1,5 @@
 body {
 	background-image: url('/static/bg/leaves.png');
-	min-height: 100vh;
-	box-sizing: border-box;
-	margin: 0;
-	display: flex;
-	justify-content: center;
-	align-content: center;
-}
-
-main {
-	max-width: 512px;
-	background-color: var(--color-element);
-	border-radius: 8px;
-	padding: 24px 18px;
-	width: 80%;
-	margin: auto;
 	box-shadow: 3px 3px 10px 3px #00000080;
 }
 
