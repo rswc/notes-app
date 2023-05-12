@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.conf import settings
 from django.utils.deconstruct import deconstructible
 import os
@@ -19,9 +19,8 @@ class PathAndRename(object):
         # return the whole path to the file
         return os.path.join(self.path, filename)
 
-
 class User(AbstractUser):
-    pass
+    objects = UserManager()
 
 class Tag(models.Model):
     name = models.CharField(max_length=32)
