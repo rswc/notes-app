@@ -21,8 +21,7 @@ class api_notes(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
 
     def get_queryset(self):
-        # Note.objects.filter(owner=self.request.user.id)
-        queryset = Note.objects.all()
+        queryset = Note.objects.filter(owner=self.request.user.id)
 
         search = self.request.query_params.get('search')
         if search is not None:
@@ -32,15 +31,18 @@ class api_notes(generics.ListCreateAPIView):
 
 class api_note(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = NoteFullSerializer
-    queryset = Note.objects.all()
+
+    def get_queryset(self):
+        return Note.objects.filter(owner=self.request.user.id)
 
 class api_tags(generics.ListCreateAPIView):
     serializer_class = TagSerializer
 
     def get_queryset(self):
-        return Tag.objects.all().order_by('name')
-        # return tag.objects.filter(owner=self.request.user.id)
+        return Tag.objects.filter(user=self.request.user.id).order_by('name')
 
 class api_tag(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TagSerializer
-    queryset = Tag.objects.all()
+
+    def get_queryset(self):
+        return Tag.objects.filter(user=self.request.user.id)

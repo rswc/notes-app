@@ -5,10 +5,13 @@ from .models import *
 class CreatableSlugRelatedField(serializers.SlugRelatedField):
     def to_internal_value(self, data):
         try:
-            obj, created = self.get_queryset().get_or_create(**{self.slug_field: data, 'user': User.objects.get(id=1)}) #self.context['request'].user
+            obj, created = self.get_queryset().get_or_create(**{self.slug_field: data, 'user': self.context['request'].user})
             return obj
         except (TypeError, ValueError):
             self.fail('invalid')
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.context['request'].user)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -20,7 +23,7 @@ class TagSerializer(serializers.ModelSerializer):
 class NoteFullSerializer(serializers.ModelSerializer):
     tags = CreatableSlugRelatedField(
         'name',
-        queryset=Tag.objects.filter(user=User.objects.get(id=1)),
+        queryset=Tag.objects.all(),
         many=True
     )
 
@@ -32,7 +35,7 @@ class NoteFullSerializer(serializers.ModelSerializer):
 class NoteSerializer(serializers.ModelSerializer):
     tags = CreatableSlugRelatedField(
         'name',
-        queryset=Tag.objects.filter(user=User.objects.get(id=1)),
+        queryset=Tag.objects.all(),
         many=True
     )
 
@@ -46,14 +49,16 @@ class NoteSerializer(serializers.ModelSerializer):
         note = Note(
             name=validated_data['name'],
             content=validated_data['content'],
-            owner=User.objects.get(id=1) #HACK: in the future, read user id from session
+            owner=self.context['request'].user
         )
         note.save()
+
+        note.tags.set(validated_data['tags'])
 
         return note
     
     def validate(self, attrs):
-        user = 1 #self.context['request'].user.id
+        user = self.context['request'].user.id
         name = attrs.get('name')
 
         if Note.objects.filter(owner=user, name=name).exists():
